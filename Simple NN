@@ -14,8 +14,8 @@ train_images = train_images / 255.0
 test_images = test_images / 255.0
 model = tf.keras.Sequential([
     tf.keras.layers.Flatten(input_shape=(28, 28)),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.kears.layers.Dense(128, activation='sigmoid'),
+    tf.keras.layers.Dense(256, activation='relu'), # New Layer
+    tf.kears.layers.Dense(128, activation='sigmoid'), # New Layer
     tf.keras.layers.Dense(10)
 ])
 model.compile(optimizer='adam',

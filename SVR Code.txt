@@ -1,0 +1,95 @@
+import seaborn as sns 
+from sklearn.metrics import mean_absolute_error 
+from sklearn.svm import SVR 
+from sklearn.linear_model import LinearRegression 
+import numpy as np 
+import matplotlib.pyplot as plt 
+import time  
+from sklearn import datasets   
+from sklearn.model_selection import train_test_split  
+  
+dfboston = datasets.load_boston()  
+X = dfboston.data 
+y = dfboston.target 
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 1, test_size=0.2) 
+def launch_model(name,model, X_train, y_train, X_test, y_test): 
+    start = time.time() 
+    model.fit(X_train, y_train) 
+    y_pred = model.predict(X_test) 
+    ypred_train = model.predict(X_train) 
+    print ('MSE train', mean_absolute_error(y_train, ypred_train)) 
+    print ('MSE test', mean_absolute_error(y_test, y_pred)) 
+    r_2 = model.score(X_test, y_test) 
+    print ('R^2 test', r_2) 
+    print('Execution time: {0:.2f} seconds.'.format(time.time() - start)) 
+    return name + '($R^2={:.3f}$)'.format(r_2), np.array(y_test), y_pred 
+  
+def plot(results): 
+    # Using subplots to display the results on the same X axis 
+    fig, plts = plt.subplots(nrows=len(results), figsize=(8, 8)) 
+    fig.canvas.set_window_title('Predicting Boston') 
+ 
+    # Show each element in the plots returned from plt.subplots() 
+    for subplot, (title, y, y_pred) in zip(plts, results): 
+        # Configure each subplot to have no tick marks 
+        # (these are meaningless for the sample dataset) 
+        subplot.set_xticklabels(()) 
+        subplot.set_yticklabels(()) 
+  
+        # Label the vertical axis 
+        subplot.set_ylabel('Home price') 
+  
+        # Set the title for the subplot 
+        subplot.set_title(title) 
+  
+        # Plot the actual data and the prediction 
+        subplot.plot(y, 'b', label='actual') 
+        subplot.plot(y_pred, 'r', label='predicted') 
+         
+        # Shade the area between the predicted and the actual values 
+        subplot.fill_between( 
+            # Generate X values [0, 1, 2, ..., len(y)-2, len(y)-1] 
+            np.arange(0, len(y), 1), 
+            y, 
+            y_pred, 
+            color='r', 
+            alpha=0.2 
+        ) 
+  
+        # Mark the extent of the training data 
+        subplot.axvline(len(y) // 2, linestyle='--', color='0', alpha=0.2) 
+  
+        # Include a legend in each subplot 
+        subplot.legend() 
+  
+    # Let matplotlib handle the subplot layout 
+    fig.tight_layout() 
+  
+    # ================================== 
+    # Display the plot in interactive UI 
+    plt.show() 
+  
+    # To save the plot to an image file, use savefig() 
+    plt.savefig('plot.png') 
+  
+    # Closing the figure allows matplotlib to release the memory used. 
+    plt.close() 
+     
+svr_rbf = SVR(kernel='rbf', gamma=0.1) 
+svr_lineal = SVR(kernel='linear') 
+lr = LinearRegression() 
+  
+results = [] 
+print ('-----------') 
+print ('SVR - RBF') 
+print ('-----------') 
+results.append(launch_model('SVR - RBF', svr_rbf, X_train, y_train, X_test, y_test)) 
+print ('-----------') 
+print ('SVR - linear') 
+print ('-----------') 
+results.append(launch_model('SVR - linear', svr_lineal, X_train, y_train, X_test, y_test)) 
+print ('-----------') 
+print ('linear Regression ') 
+print ('-----------') 
+results.append(launch_model('Linear Regresion', lr, X_train, y_train, X_test, y_test)) 
+plot(results) 

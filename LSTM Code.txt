@@ -18,15 +18,19 @@ print(x_train[0].shape)
 model = Sequential()
 
 # IF you are running with a GPU, try out the CuDNNLSTM layer type instead (don't pass an activation, tanh is required)
+### Adding the first LSTM layer ###
 model.add(LSTM(128, input_shape=(x_train.shape[1:]), activation='relu', return_sequences=True))
 model.add(Dropout(0.2))
 
+### Adding the second LSTM layer ###
 model.add(LSTM(128, activation='relu'))
 model.add(Dropout(0.1))
 
+### Adding a simple hidden layer ###
 model.add(Dense(32, activation='relu'))
 model.add(Dropout(0.2))
 
+### Adding the output layer ###
 model.add(Dense(10, activation='softmax'))
 
 opt = tf.keras.optimizers.Adam(lr=0.001, decay=1e-6)

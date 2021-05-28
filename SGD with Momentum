@@ -23,9 +23,16 @@ model = tf.keras.Sequential([
 onehot_train_labels = tf.keras.utils.to_categorical(train_labels)
 onehot_test_labels = tf.keras.utils.to_categorical(test_labels)
 
+# Making the Optimization Function
 opt = tf.keras.optimizers.SGD(
-learning_rate=0.01, momentum=0.25, nesterov=False, name="SGD") 
+# Defining the Learning Rate
+learning_rate=0.01, 
+# Defining the momentum
+momentum=0.25, nesterov=False, name="SGD") 
+
+# Compiling the model
 model.compile(optimizer=opt, 
+# Defining the loss function as the 'CategoricalCrossentropy' function
 loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True), 
               metrics=['accuracy'])
 

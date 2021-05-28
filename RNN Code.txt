@@ -9,16 +9,30 @@ mnist = keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
+### Initilizing the model ###
 xmodel = Sequential()
+
+### Adding a RNN Layer ###
 xmodel.add(tf.keras.layers.SimpleRNN(128, input_shape = (28,28),
                                     return_sequences=True)),
+
+### Adding a RNN Layer ### 
 xmodel.add(tf.keras.layers.SimpleRNN(256,
                                     return_sequences=True)),
+                                    
+### Adding a RNN Layer ###
+### Does not include the 'return_sequence' variable ###
+### The 'return_sequence' variable is only required if it is not the last RNN Layer ###
 xmodel.add(tf.keras.layers.SimpleRNN(128)),
+
+### Final Layer ###
 xmodel.add(tf.keras.layers.Dense(10))
+
+### Building a the model and providing a model summary ###
 xmodel.build()
 xmodel.summary()
 
+### Compiling the model ###
 xmodel.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])

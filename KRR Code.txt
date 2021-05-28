@@ -1,0 +1,48 @@
+from sklearn.kernel_ridge import KernelRidge  
+from sklearn.model_selection import train_test_split  
+from sklearn import datasets  
+import matplotlib.pyplot as plt   
+   
+bds = datasets.load_boston()  
+X = bds.data  
+y = bds.target  
+X_train, X_test, y_train, y_test = train_test_split(X,y, random_state = 1)  
+   
+krrModel = KernelRidge(alpha = 1.0)  
+krrModel = krrModel.fit(X_train, y_train)  
+scores = krrModel.predict(X_test)  
+   
+l = (scores.shape[0])  
+newVal = []  
+for i in range(l):  
+    newVal.append((round(scores[i], 0)))  
+   
+diff = []   
+def effVal(A,P):  
+    err = 0   
+    zc = 0   
+    nn = 3 
+    for i in range(l):  
+        if abs(newVal[i] - y_test[i]) < nn:  
+            err += 1  
+    print('The portion of predicted values within', nn,'from the actual values are ', err/l)  
+    for i in range(l):  
+        dif_num = newVal[i] - y_test[i]  
+        diff.append(abs(dif_num))  
+        if dif_num <= 5:  
+            zc = zc + 1  
+    print('The portion of predicted values within5 from the actual values are',zc/l)  
+    #plt.plot(diff)  
+    plt.plot(newVal, 'g', y_test,'r')  
+     
+def mse(nv,av): 
+    sum_diff = 0 
+    for i in range(l): 
+        prg_err = newVal[i] - y_test[i] 
+        err_sqd = prg_err**2 
+        sum_diff += err_sqd 
+    mean_squared_error = sum_diff/l 
+    print('The mean squared error is',mean_squared_error) 
+      
+effVal(y_test, newVal)  
+mse(newVal, y_test) 
